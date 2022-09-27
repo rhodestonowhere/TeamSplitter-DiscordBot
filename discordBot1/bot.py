@@ -3,7 +3,7 @@ import hikari
 import lightbulb
 import random
 
-bot = lightbulb.BotApp(token='MTAxNDY3MTcyNjg1ODIxNTQ1NA.GY0rRt.19cZWmKEu5z6XqvUAcc9o0Zl2jGBFzQBrASJVA', 
+bot = lightbulb.BotApp(token='', 
     default_enabled_guilds=(1014672301914067014))
 
 @bot.listen(hikari.StartedEvent)
@@ -71,14 +71,16 @@ async def fair_split(context):
         pair = tuple.split(",") #split tuple using "," delimiter to seperate player name and skill
         playerDict.setdefault(pair[0], pair[1]) #add player's name and according skill to dictionary
 
-    #algorithm for creating balanced teams:
+
+    #Various algorithms for creating balanced teams:
+    #Method 1: split teams based on score total
     team1 = []
     team2 = []
     team1skill = 0
     team2skill = 0
     iter1 = 0
     for key in playerDict: #for each key in the dictionary,
-        value = int(playerDict[key]) #gets val associated with key
+        value = int(playerDict[key]) #gets val associated with key, typecasts to int()
         if iter1 == 0: #checks if this is the first iteration
             team1.insert(0, key) #in which case, just add first key into team 1
             team1skill += value #add skill level of current player to overall team skill
@@ -102,15 +104,60 @@ async def fair_split(context):
         #algorithm does have issues, as it does not always create the most equal teams
         #ex: "a,5 b,1 c,2 d,4" creates a team split as 5-7, when it should be 6-6
         
-    print(team1, team1skill)
-    print(team2, team2skill)
+        
+        
+    team1Formatted = ", ".join(team1)
+    team2Formatted = ", ".join(team2)
+    response = '\n**Team 1:** {team1} | Power Level: {team1skill}\n**-------------------------------**\n**Team 2:** {team2} | Power Level: {team2skill}'.format(
+        team1 = team1Formatted, team2 = team2Formatted, team1skill = team1skill, team2skill = team2skill) 
+    await context.respond(response)
+    
+
+
+@bot.command
+@lightbulb.option('player_skill', 'Input: player,skill| list of players with skills to be split')
+@lightbulb.command('fair_split_2', 'splits a list of players into two most balanced teams using averages. skill level ranges 1-5')
+@lightbulb.implements(lightbulb.SlashCommand)
+async def fair_split_2(context):
+    playerList = context.options.player_skill.split() #initial list of (player,skill) tuples
+
+    playerDict = {} #declare dictionary 
+    for tuple in playerList: #for each tuple in player list,
+        pair = tuple.split(",") #split tuple using "," delimiter to seperate player name and skill
+        playerDict.setdefault(pair[0], int(pair[1])) #add player's name and according skill to dictionary
+
+    globalAvg = sum(playerDict.values()) / len(playerDict) #global average is sum of dictionary values over number of elements in dictionary
+    # print(globalAvg)
+    """
+    Outline of method:
+    set team1[0] = first element of dict
+    set team2[0] = second element of dict
+    team1Avg = sum(team1) / len(team1)
+    team2Avg = sum(team2) / len(team2)
+    for pair in playerDict:
+        if pair value < global avg 
+            add to team with lowest average skill
+        else
+            add to team with highest average skill
+        if either team is has reached team capacity then put remaining players into other team
+    """
+
+
+
+    team1 = []
+    team2 = []
+    team1skill = 0
+    team2skill = 0
+    iter1 = 0
+
+
 
     team1Formatted = ", ".join(team1)
     team2Formatted = ", ".join(team2)
     response = '\n**Team 1:** {team1} | Power Level: {team1skill}\n**-------------------------------**\n**Team 2:** {team2} | Power Level: {team2skill}'.format(
         team1 = team1Formatted, team2 = team2Formatted, team1skill = team1skill, team2skill = team2skill) 
-    
 
-    await context.respond(response)
+
+    await context.respond("WIP")
 
 bot.run()
