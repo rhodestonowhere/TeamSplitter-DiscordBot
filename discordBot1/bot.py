@@ -141,23 +141,71 @@ async def fair_split_2(context):
             add to team with highest average skill
         if either team is has reached team capacity then put remaining players into other team
     """
-
-
-
-    team1 = []
+    team1 = [] #list declaration
     team2 = []
-    team1skill = 0
-    team2skill = 0
-    iter1 = 0
+    keys = list(playerDict.keys()) #get list of all keys in the dictionary as list
+    team1.insert(0, keys[0]) #insert first and second elements of list into teams
+    team2.insert(0, keys[1])
+    team1TotalSkill = playerDict[team1[0]] #get skill of initial players
+    keys.pop(0)
+    playerDict.pop(team1[0])
+    print(team1TotalSkill)
+    team2TotalSkill = playerDict[team2[0]]
+    keys.pop(1)
+    playerDict.pop(team2[0])
+    print(team2TotalSkill)
+    weakerTeam = True #boolean is flipped depending on which team is weaker: T if team1, F if team2
+    
+    for player in playerDict:
+        print("start")
+        team1Avg = team1TotalSkill / len(team1) 
+        team2Avg = team2TotalSkill / len(team2)
+        if team1Avg > team2Avg:
+            lowAvgTeam = team2
+            lowTotalSkill = team2TotalSkill
+            highAvgTeam = team1
+            highTotalSkill = team1TotalSkill
+        else:
+            lowAvgTeam = team1
+            print(lowAvgTeam)
+            lowTotalSkill = team1TotalSkill
+            highAvgTeam = team2
+            highTotalSkill = team2TotalSkill
 
+        if playerDict[player] > globalAvg:
+            lowAvgTeam.insert(0, player)
+            lowTotalSkill += playerDict[player]
+            print("first")
+            print(lowAvgTeam)
+            print(lowTotalSkill)
+            print("Team 1:")
+            print(team1)
+            print("Team2 :")
+            print(team2)
+
+        elif playerDict[player] < globalAvg:
+            highAvgTeam.insert(0, player)
+            highTotalSkill += playerDict[player]
+            print("second")
+            print(highAvgTeam)
+            print(highTotalSkill)
+            print("Team 1:")
+            print(team1)
+            print("Team2 :")
+            print(team2)        
+        
+        if len(team1) == len(playerDict) / 2:
+            team2.insert(0, player)
+        else:
+            team1.insert(0, player)
 
 
     team1Formatted = ", ".join(team1)
     team2Formatted = ", ".join(team2)
     response = '\n**Team 1:** {team1} | Power Level: {team1skill}\n**-------------------------------**\n**Team 2:** {team2} | Power Level: {team2skill}'.format(
-        team1 = team1Formatted, team2 = team2Formatted, team1skill = team1skill, team2skill = team2skill) 
+        team1 = team1Formatted, team2 = team2Formatted, team1skill = team1Avg, team2skill = team2Avg) 
 
 
-    await context.respond("WIP")
+    await context.respond(response)
 
 bot.run()
