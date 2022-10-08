@@ -149,56 +149,95 @@ async def fair_split_2(context):
     team1TotalSkill = playerDict[team1[0]] #get skill of initial players
     keys.pop(0)
     playerDict.pop(team1[0])
-    print(team1TotalSkill)
     team2TotalSkill = playerDict[team2[0]]
     keys.pop(1)
     playerDict.pop(team2[0])
-    print(team2TotalSkill)
-    weakerTeam = True #boolean is flipped depending on which team is weaker: T if team1, F if team2
+
     
     for player in playerDict:
-        print("start")
+        print('///////////////////////////////////////////')
+        print("|Loop Start| Global Average is: {}".format(globalAvg))
+        print('///////////////////////////////////////////')
         team1Avg = team1TotalSkill / len(team1) 
         team2Avg = team2TotalSkill / len(team2)
+        print("Team 1 average is: {}".format(team1Avg))
+        print("Team 2 average is: {}".format(team2Avg))
+
+        if len(team1) == (len(playerDict)+2) / 2:
+            print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+            print("Team 1 has reached capacity! Placing remaining members in Team 2.")
+            print("player name is: {}".format(player))
+            team2.insert(0, player)
+            team2TotalSkill += playerDict[player]
+            continue
+
+        elif len(team2) == (len(playerDict)+2) / 2:       
+            print("::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::")
+            print("Team 2 has reached capacity! Placing remaining members in Team 1.")
+            print("player name is: {}".format(player))
+            team1.insert(0, player)
+            team1TotalSkill += playerDict[player]
+            continue
+
         if team1Avg > team2Avg:
+            print("Low Average Team is: Team 2")
             lowAvgTeam = team2
             lowTotalSkill = team2TotalSkill
             highAvgTeam = team1
             highTotalSkill = team1TotalSkill
+            if playerDict[player] > globalAvg:
+                print("player skill: higher than globalAvg")
+                print("player name is: {}".format(player))
+                print("player skill is: {}".format(playerDict[player]))
+                lowAvgTeam.insert(0, player)
+                team2TotalSkill += playerDict[player]
+                print("Current Team 1: {}".format(team1))
+                print("Current Team 1 Skill: {}".format(team1TotalSkill))
+                print("Current Team2 : {}".format(team2))
+                print("Current Team 2 Skill: {}".format(team2TotalSkill))
+
+            elif playerDict[player] < globalAvg:
+                print("player skill: lower than globalAvg")
+                print("player name is: {}".format(player))
+                print("player skill is: {}".format(playerDict[player]))
+                highAvgTeam.insert(0, player)
+                team1TotalSkill += playerDict[player]
+                print("Current Team 1: {}".format(team1))
+                print("Current Team 1 Skill: {}".format(team1TotalSkill))
+                print("Current Team2 : {}".format(team2))
+                print("Current Team 2 Skill: {}".format(team2TotalSkill))      
         else:
+            print("Low Average Team is: Team 1")
             lowAvgTeam = team1
-            print(lowAvgTeam)
             lowTotalSkill = team1TotalSkill
             highAvgTeam = team2
             highTotalSkill = team2TotalSkill
+            if playerDict[player] > globalAvg:
+                print("player skill: higher than globalAvg")
+                print("player name is: {}".format(player))
+                print("player skill is: {}".format(playerDict[player]))
+                lowAvgTeam.insert(0, player)
+                team1TotalSkill += playerDict[player]
+                print("Current Team 1: {}".format(team1))
+                print("Current Team 1 Skill: {}".format(team1TotalSkill))
+                print("Current Team2 : {}".format(team2))
+                print("Current Team 2 Skill: {}".format(team2TotalSkill))
 
-        if playerDict[player] > globalAvg:
-            lowAvgTeam.insert(0, player)
-            lowTotalSkill += playerDict[player]
-            print("first")
-            print(lowAvgTeam)
-            print(lowTotalSkill)
-            print("Team 1:")
-            print(team1)
-            print("Team2 :")
-            print(team2)
+            elif playerDict[player] < globalAvg:
+                print("player skill: lower than globalAvg")
+                print("player name is: {}".format(player))
+                print("player skill is: {}".format(playerDict[player]))
+                highAvgTeam.insert(0, player)
+                team2TotalSkill += playerDict[player]
+                print("Current Team 1: {}".format(team1))
+                print("Current Team 1 Skill: {}".format(team1TotalSkill))
+                print("Current Team2 : {}".format(team2))
+                print("Current Team 2 Skill: {}".format(team2TotalSkill))      
 
-        elif playerDict[player] < globalAvg:
-            highAvgTeam.insert(0, player)
-            highTotalSkill += playerDict[player]
-            print("second")
-            print(highAvgTeam)
-            print(highTotalSkill)
-            print("Team 1:")
-            print(team1)
-            print("Team2 :")
-            print(team2)        
-        
-        if len(team1) == len(playerDict) / 2:
-            team2.insert(0, player)
-        else:
-            team1.insert(0, player)
 
+    #one last calculation to account for last added player
+    team1Avg = team1TotalSkill / len(team1) 
+    team2Avg = team2TotalSkill / len(team2)
 
     team1Formatted = ", ".join(team1)
     team2Formatted = ", ".join(team2)
