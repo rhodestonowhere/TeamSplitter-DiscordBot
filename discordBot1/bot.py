@@ -3,7 +3,7 @@ import hikari
 import lightbulb
 import random
 
-bot = lightbulb.BotApp(token='MTAxNDY3MTcyNjg1ODIxNTQ1NA.GSKH9h.rwsE26NKLvvc06h4gVSUsZZgFPqahquX2RIKeE', 
+bot = lightbulb.BotApp(token='', 
     default_enabled_guilds=(1014672301914067014))
 
 @bot.listen(hikari.StartedEvent)
