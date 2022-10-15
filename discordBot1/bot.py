@@ -3,7 +3,7 @@ import hikari
 import lightbulb
 import random
 
-bot = lightbulb.BotApp(token='', 
+bot = lightbulb.BotApp(token='MTAxNDY3MTcyNjg1ODIxNTQ1NA.GSKH9h.rwsE26NKLvvc06h4gVSUsZZgFPqahquX2RIKeE', 
     default_enabled_guilds=(1014672301914067014))
 
 @bot.listen(hikari.StartedEvent)
@@ -25,7 +25,7 @@ async def add(context):
     await context.respond(context.options.n1 + context.options.n2)
 
 @bot.command
-@lightbulb.option('players', 'the list of players to split', type=str)
+@lightbulb.option('players', 'Input: player|the list of players to split', type=str)
 @lightbulb.command('split', 'randomly splits a list players into 2 teams. enter the list a player names seperated by a space')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def split(context):
@@ -58,7 +58,7 @@ async def split(context):
 
 @bot.command
 @lightbulb.option('player_skill', 'Input: player,skill| list of players with skills to be split')
-@lightbulb.command('fair_split', 'splits a list of players into two most balanced teams based on skill level. skill level ranges 1-5')
+@lightbulb.command('fair_split', 'splits a list of players into two most balanced teams based on skill level.')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def fair_split(context):
     playerList = context.options.player_skill.split() #initial list of (player,skill) tuples
@@ -114,7 +114,7 @@ async def fair_split(context):
 
 @bot.command
 @lightbulb.option('player_skill', 'Input: player,skill| list of players with skills to be split')
-@lightbulb.command('fair_split_2', 'splits a list of players into two most balanced teams using averages. skill level ranges 1-5')
+@lightbulb.command('fair_split_2', 'splits a list of players into two most balanced teams using averages.')
 @lightbulb.implements(lightbulb.SlashCommand)
 async def fair_split_2(context):
     
